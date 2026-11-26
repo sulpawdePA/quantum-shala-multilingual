@@ -1,0 +1,111 @@
+{
+  "label": "English",
+  "title": "Quantum Shala",
+  "footer": "Runs on real Qiskit circuits • QFF 2026 Education Track",
+  "undo": "← Undo",
+  "clear": "Clear",
+  "result": "Result (measured 1000 times)",
+  "circuit": "See the real Qiskit circuit",
+  "shots": "Numbers change slightly each run because quantum measurement is probabilistic.",
+  "check": "Check",
+  "correct": "Correct! ",
+  "wrong": "Think again. ",
+  "err": "Cannot reach the server.",
+  "preset": "Run Grover",
+  "guide_next": "Next step: press \"{g}\" (the glowing button).",
+  "guide_done": "Well done! Now look at the picture and the bars, then answer the quiz below. You can also try your own gates.",
+  "guide_free": "Free play: try any gates. Press Clear to start the guided steps again.",
+  "measure_once": "Measure once",
+  "viz_names": ["Mumbai", "Pune"],
+  "viz_undecided": "Spinning: not decided yet. Press \"Measure once\" to make it land.",
+  "viz_certain": "Not spinning: the result is already certain.",
+  "viz_landed": "Landed on {k} this time. Press again: it may land differently.",
+  "viz_boxes": "The brighter the box, the more often it is found. Press \"Measure once\" to open one box.",
+  "a11y_lite": "⚡ Low Bandwidth / Lite Mode",
+  "a11y_contrast": "👁 High Contrast",
+  "sr_announcement": "Circuit updated. Results: {res}",
+  "gates_title": "What do these gates do?",
+  "qnote": "q0 is the first qubit and q1 is the second. In a result such as 01, the left digit is q0 and the right digit is q1.",
+  "ins_one": "Always {k}: the result is certain, there is no randomness.",
+  "ins_pair": "Only {a} and {b} appear, and the two digits always match: the qubits are linked (entangled).",
+  "ins_random": "The results are spread out: the outcome is not decided until you measure, so it is random.",
+  "gates": {
+    "h": {
+      "cap": "spinning coin",
+      "desc": "H: puts the qubit in superposition, a 50-50 mix of 0 and 1. Pressing it twice undoes it."
+    },
+    "x": {
+      "cap": "flip",
+      "desc": "X: turns 0 into 1 and 1 into 0, like turning a coin over."
+    },
+    "z": {
+      "cap": "hidden twist",
+      "desc": "Z: changes a hidden sign. Alone you see no change; try H, then Z, then H."
+    },
+    "cx01": {
+      "cap": "link q1 to q0",
+      "desc": "CX (0→1): flips q1 only if q0 is 1. After H on q0 it ties the two qubits together (entanglement)."
+    },
+    "cx10": {
+      "cap": "link q0 to q1",
+      "desc": "CX (1→0): flips q0 only if q1 is 1. The same idea with the roles swapped."
+    },
+    "cz01": {
+      "cap": "mark box 11",
+      "desc": "CZ: marks box 11 by flipping its hidden sign. Grover uses this to mark the prize box."
+    }
+  },
+  "L": [
+    {
+      "name": "1. Superposition",
+      "story": "Imagine a coin spinning in the air. Until it lands, it is not yet heads or tails. A qubit is like that: until measured it is a mix of both states.",
+      "task": "Press nothing first: result is always 0. Then press H and watch. Then press H again. What happens?",
+      "q": "After one H gate, how often do 0 and 1 appear?",
+      "o": [
+        "Always 0",
+        "Always 1",
+        "About half 0, half 1"
+      ],
+      "a": 2,
+      "hint": "Remember the spinning coin: before it lands, it is neither fully heads nor fully tails. Press H once and read the bars.",
+      "why": "H is the spinning coin. When measured it gives a 50-50 chance."
+    },
+    {
+      "name": "2. Entanglement (a pair)",
+      "story": "Two magic gloves: one in Mumbai, one in Pune. If Mumbai's is left, Pune's is automatically right. Two qubits can be tied together like this.",
+      "task": "Apply H on q0, then CX (0→1). Do only 00 and 11 appear? Do 01 or 10 ever appear?",
+      "q": "Which results appear after making the pair?",
+      "o": [
+        "All of 00, 01, 10, 11",
+        "Only 00 and 11",
+        "Only 01 and 10"
+      ],
+      "a": 1,
+      "hint": "Think of the gloves: the two always match. Build H on q0 then CX (0→1) and look at which bars are not empty.",
+      "why": "Both qubits always match. Measuring one tells you the other."
+    },
+    {
+      "name": "3. Grover search",
+      "story": "A prize is hidden in one of 4 boxes (here box '11'). The usual way opens 2 to 3 boxes on average. Grover finds the right box in 1 round.",
+      "task": "Press 'Run Grover'. Then try adding the gates one by one yourself. Does 11 appear almost 100% of the time?",
+      "q": "At the end of Grover, how often do we get the prize box '11'?",
+      "o": [
+        "About 25% of the time",
+        "About 50% of the time",
+        "Almost every time"
+      ],
+      "a": 2,
+      "hint": "Random guessing among 4 boxes gives 25%. Press 'Run Grover' and read the 11 bar.",
+      "why": "For 4 options one round is enough. More options means a bigger advantage."
+    }
+  ],
+  "circuit_how": [
+    "Each horizontal line is one qubit (q0, q1). Time moves from left to right.",
+    "Each box on a line is a gate you pressed, in the same order as the chips above.",
+    "M is the measurement: the qubit is read and becomes a plain 0 or 1.",
+    "The line c: stores the measured result. The program repeats the whole circuit 1000 times, and that gives the bars."
+  ],
+  "words_title": "Your circuit in words",
+  "step_none": "No gates yet: the qubit stays 0.",
+  "step_measure": "Finally: measure (M) and write down 0 or 1. This is repeated 1000 times."
+}

@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.bob/
+Requirement/
+PITCH.md
+USER_TEST.md

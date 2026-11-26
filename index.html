@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum Shala | क्वांटम शाळा</title>
+<style>
+  body{font-family:"Segoe UI",system-ui,sans-serif;margin:0;background:#f4f6fb;color:#1f2328;line-height:1.6}
+  header{background:#1e2761;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  header h1{margin:0;font-size:20px}
+  .top-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .a11y-bar{display:flex;gap:6px;align-items:center;font-size:13px}
+  .a11y-btn{background:#2a3680;color:#fff;border:1px solid #4a59a8;border-radius:6px;padding:4px 10px;font-size:13px}
+  .a11y-btn:hover{background:#3848a6}
+  .a11y-btn.active{background:#f5b400;color:#1f2328;border-color:#c98f00;font-weight:700}
+  main{max-width:860px;margin:0 auto;padding:16px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  button{font:inherit;cursor:pointer;border:1px solid #c5cbe0;background:#fff;border-radius:8px;padding:8px 14px}
+  button:hover{background:#eef1fb}
+  button:focus-visible{outline:3px solid #f5b400;outline-offset:2px}
+  button.active{background:#3b82d4;color:#fff;border-color:#3b82d4}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:14px}
+  .story{background:#fff8e1;border-left:4px solid #f5b400;padding:10px 14px;border-radius:6px}
+  .gates button{font-weight:600;min-width:96px;line-height:1.3;margin:2px}
+  .gates button small{display:block;font-weight:400}
+  .legend{background:#f4f6fb;border-radius:8px;padding:8px 14px;margin-top:10px;font-size:14px}
+  .legend ul{margin:4px 0 0;padding-left:20px}
+  .insight{background:#e8f5e9;border-left:4px solid #0a7a2f;padding:8px 12px;border-radius:6px;margin:10px 0 0}
+  .seq{min-height:34px;margin:10px 0;font-family:Consolas,monospace}
+  .chip{display:inline-block;background:#e8efff;border-radius:6px;padding:2px 8px;margin:2px}
+  .bar-row{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .bar-label{width:44px;font-family:Consolas,monospace;font-weight:700}
+  .bar-track{flex:1;background:#eef0f4;border-radius:6px;height:26px;overflow:hidden}
+  .bar-fill{height:100%;background:#3b82d4;transition:width .35s ease;min-width:2px}
+  .bar-pct{width:56px;text-align:right}
+  pre{background:#0f172a;color:#d6e2ff;padding:10px;border-radius:8px;overflow:auto;font-size:13px}
+  .quiz label{display:block;margin:6px 0;cursor:pointer}
+  .ok{color:#0a7a2f;font-weight:600}.no{color:#b3261e;font-weight:600}
+  small,.muted{color:#57606a}
+  .guide{background:#e8f1fd;border-left:4px solid #3b82d4;padding:8px 12px;border-radius:6px;margin-bottom:10px;font-weight:600}
+  .guide.done{background:#e8f5e9;border-color:#0a7a2f}
+  .gates button.dim,#preset.dim{opacity:.45}
+  button.next{background:#fff3cd;border-color:#f5b400;box-shadow:0 0 0 3px rgba(245,180,0,.45);animation:pulse 1.2s ease-in-out infinite}
+  .viz{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;align-items:flex-end;margin:6px 0 12px;padding:12px;background:#f7f8fa;border-radius:10px;min-height:96px}
+  .vitem{text-align:center;perspective:400px}
+  .vname{font-size:13px;color:#57606a;margin-top:6px}
+  .coin{width:64px;height:64px;border-radius:50%;background:#f5b400;border:3px solid #c98f00;color:#1f2328;font:700 26px Consolas,monospace;display:flex;align-items:center;justify-content:center;margin:0 auto}
+  .coin.spin{animation:spin 1s linear infinite}
+  .coin.land{animation:land .6s ease-out}
+  .box{width:68px;height:68px;border-radius:10px;border:2px solid #c5cbe0;font:700 20px Consolas,monospace;display:flex;align-items:center;justify-content:center;margin:0 auto;background:rgba(245,180,0,calc(.08 + var(--p)*.92));transition:background .35s ease}
+  .box.picked{border-color:#1e2761;border-width:4px}
+  .vcap{flex-basis:100%;text-align:center;margin:0}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  
+  /* Low-Bandwidth / Lite Mode */
+  body.lite-mode *{animation:none !important;transition:none !important}
+  body.lite-mode .viz{min-height:auto;padding:8px}
+  body.lite-mode .coin{border:2px solid #333}
+  
+  /* High Contrast Mode */
+  body.high-contrast{background:#000;color:#fff}
+  body.high-contrast header{background:#000;border-bottom:2px solid #ffeb3b}
+  body.high-contrast .card{background:#121212;border:2px solid #fff;color:#fff}
+  body.high-contrast .story{background:#262200;border-left:4px solid #ffeb3b;color:#fff}
+  body.high-contrast .insight{background:#002b11;border-left:4px solid #00e676;color:#fff}
+  body.high-contrast .guide{background:#002244;border-left:4px solid #64b5f6;color:#fff}
+  body.high-contrast .guide.done{background:#002b11;border-color:#00e676}
+  body.high-contrast .legend{background:#1e1e1e;color:#fff}
+  body.high-contrast button{background:#222;color:#fff;border:2px solid #fff}
+  body.high-contrast button.active{background:#ffeb3b;color:#000;border-color:#ffeb3b;font-weight:700}
+  body.high-contrast button.next{background:#3e3000;border-color:#ffeb3b;box-shadow:0 0 0 3px #ffeb3b}
+  body.high-contrast .bar-track{background:#333}
+  body.high-contrast .bar-fill{background:#ffeb3b}
+  body.high-contrast .chip{background:#333;color:#ffeb3b;border:1px solid #ffeb3b}
+  body.high-contrast pre{background:#000;border:1px solid #fff;color:#ffeb3b}
+  body.high-contrast .muted, body.high-contrast small{color:#cfcfcf}
+  
+  @keyframes spin{to{transform:rotateY(360deg)}}
+  @keyframes land{from{transform:rotateY(720deg)}to{transform:rotateY(0)}}
+  @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(245,180,0,.2)}}
+  @media (prefers-reduced-motion:reduce){.coin.spin,.coin.land,button.next{animation:none}}
+  footer{text-align:center;color:#57606a;font-size:12px;padding:16px}
+</style>
+</head>
+<body>
+<div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<header>
+  <h1 id="title"></h1>
+  <div class="top-controls">
+    <div class="a11y-bar">
+      <button id="toggle-lite" class="a11y-btn" aria-pressed="false" title="Toggle Low Bandwidth / Lite Mode"></button>
+      <button id="toggle-contrast" class="a11y-btn" aria-pressed="false" title="Toggle High Contrast Mode"></button>
+    </div>
+    <div id="langs" role="navigation" aria-label="Language Selector"></div>
+  </div>
+</header>
+<main role="main">
+  <div class="tabs" id="tabs"></div>
+  <div class="card">
+    <h2 id="lesson-title" style="margin-top:0"></h2>
+    <div class="story" id="story"></div>
+    <p id="task"></p>
+    <p class="muted" id="draft" hidden>Draft translation, not yet reviewed by a native speaker. / हे भाषांतर अजून तपासलेले नाही.</p>
+  </div>
+
+  <div class="card">
+    <div class="guide" id="guide"></div>
+    <div class="gates" id="gates"></div>
+    <div class="legend"><b id="legend-title"></b><ul id="legend"></ul><div class="muted" id="qnote"></div></div>
+    <div class="seq" id="seq"></div>
+    <button id="undo"></button> <button id="clear"></button>
+    <span id="preset-wrap"></span>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0" id="result-title"></h3>
+    <div class="viz" id="viz"></div>
+    <div id="bars"></div>
+    <div class="insight" id="insight"></div>
+    <p class="muted" id="shots-note"></p>
+    <details><summary id="circuit-title"></summary>
+      <div class="legend"><ul id="circuit-how"></ul></div>
+      <pre id="diagram"></pre>
+      <div class="legend"><b id="words-title"></b><ol id="words"></ol></div>
+    </details>
+  </div>
+
+  <div class="card quiz" id="quiz"></div>
+</main>
+<footer id="footer"></footer>
+
+<script>
+let T = {}, LANGS = [];
+async function loadLang(code){
+  if(!T[code]){ const r = await fetch("/api/lang/"+code); if(!r.ok) throw new Error("lang"); T[code] = await r.json(); }
+  lang = code;
+}
+
+const GATE_SETS = {
+  0: { qubits: 1, gates: ["x0", "h0", "z0"] },
+  1: { qubits: 2, gates: ["h0", "h1", "x0", "x1", "cx01", "cx10"] },
+  2: { qubits: 2, gates: ["h0", "h1", "x0", "x1", "z0", "z1", "cz01"] }
+};
+const GROVER = ["h0","h1","cz01","h0","h1","x0","x1","cz01","x0","x1","h0","h1"];
+// Guided first step: the gate sequence each lesson walks the learner through.
+const GUIDE = { 0: ["h0","h0"], 1: ["h0","cx01"], 2: GROVER };
+const GKEY = { h0:"h", h1:"h", x0:"x", x1:"x", z0:"z", z1:"z", cx01:"cx01", cx10:"cx10", cz01:"cz01" };
+
+const LABEL = { h0:"H q0", h1:"H q1", x0:"X q0", x1:"X q1", z0:"Z q0", z1:"Z q1", cx01:"CX 0→1", cx10:"CX 1→0", cz01:"CZ" };
+
+let lang = "mr", lesson = 0, seq = [], last = null, picked = null;
+let isLite = localStorage.getItem("qs_lite") === "1";
+let isHighContrast = localStorage.getItem("qs_contrast") === "1";
+const $ = id => document.getElementById(id);
+
+function esc(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+
+function applyA11ySettings(){
+  document.body.classList.toggle("lite-mode", isLite);
+  $("toggle-lite").classList.toggle("active", isLite);
+  $("toggle-lite").setAttribute("aria-pressed", isLite ? "true" : "false");
+  
+  document.body.classList.toggle("high-contrast", isHighContrast);
+  $("toggle-contrast").classList.toggle("active", isHighContrast);
+  $("toggle-contrast").setAttribute("aria-pressed", isHighContrast ? "true" : "false");
+}
+
+function render(){
+  const t = T[lang], L = t.L[lesson];
+  document.documentElement.lang = lang;
+  $("title").textContent = t.title; $("footer").textContent = t.footer;
+  $("toggle-lite").textContent = t.a11y_lite;
+  $("toggle-contrast").textContent = t.a11y_contrast;
+  applyA11ySettings();
+  $("langs").innerHTML = LANGS.map(x=>`<button data-lang="${x.code}" aria-label="${esc(x.label)}" class="${x.code===lang?"active":""}">${esc(x.label)}</button>`).join(" ");
+  $("draft").hidden = !t.draft;
+  $("tabs").setAttribute("role", "tablist");
+  $("tabs").setAttribute("aria-label", "Lessons");
+  $("tabs").innerHTML = t.L.map((l,i)=>`<button role="tab" aria-selected="${i===lesson}" class="${i===lesson?"active":""}" data-i="${i}">${esc(l.name)}</button>`).join("");
+  $("lesson-title").textContent = L.name; $("story").textContent = L.story; $("task").textContent = L.task;
+  const gi = g => t.gates[GKEY[g]];
+  $("gates").innerHTML = GATE_SETS[lesson].gates.map(g=>`<button data-g="${g}" aria-label="${LABEL[g]} (${esc(gi(g).cap)}): ${esc(gi(g).desc)}" title="${esc(gi(g).desc)}">${LABEL[g]}<small>${esc(gi(g).cap)}</small></button>`).join(" ");
+  $("legend-title").textContent = t.gates_title;
+  $("legend").innerHTML = [...new Set(GATE_SETS[lesson].gates.map(g=>GKEY[g]))].map(k=>`<li>${esc(t.gates[k].desc)}</li>`).join("");
+  $("qnote").textContent = GATE_SETS[lesson].qubits===2 ? t.qnote : "";
+  $("undo").textContent = t.undo; $("undo").setAttribute("aria-label", t.undo);
+  $("clear").textContent = t.clear; $("clear").setAttribute("aria-label", t.clear);
+  $("preset-wrap").innerHTML = lesson===2 ? `<button id="preset" class="active">${esc(t.preset)}</button>` : "";
+  $("result-title").textContent = t.result; $("shots-note").textContent = t.shots; $("circuit-title").textContent = t.circuit;
+  $("circuit-how").innerHTML = t.circuit_how.map(s=>`<li>${esc(s)}</li>`).join("");
+  $("words-title").textContent = t.words_title;
+  $("quiz").innerHTML = `<b>${esc(L.q)}</b>` + L.o.map((o,i)=>`<label><input type="radio" name="q" value="${i}"> ${esc(o)}</label>`).join("")
+    + `<button id="check">${esc(t.check)}</button> <span id="feedback"></span>`;
+  renderSeq(); run();
+}
+
+function renderWords(){
+  const t = T[lang];
+  $("words").innerHTML = (seq.length ? seq.map(g=>`<li>${LABEL[g]}: ${esc(t.gates[GKEY[g]].cap)}</li>`) : [`<li>${esc(t.step_none)}</li>`])
+    .concat(`<li>${esc(t.step_measure)}</li>`).join("");
+}
+
+function renderSeq(){
+  renderWords();
+  $("seq").innerHTML = seq.length ? seq.map(g=>`<span class="chip">${LABEL[g]}</span>`).join("") : "<span class='muted'>—</span>";
+  updateGuide();
+}
+
+function updateGuide(){
+  const t = T[lang], target = GUIDE[lesson], guide = $("guide");
+  const same = (a,b) => a.length===b.length && a.every((x,i)=>x===b[i]);
+  let next = null, state = "free";   // state: step | done | free
+  if(lesson===2){
+    if(seq.length===0){ next = "preset"; state = "step"; } else if(same(seq,target)) state = "done";
+  } else if(seq.length < target.length && seq.every((x,i)=>x===target[i])){ next = target[seq.length]; state = "step"; }
+  else if(same(seq,target)) state = "done";
+  guide.className = "guide" + (state==="done" ? " done" : "");
+  guide.textContent = state==="step" ? t.guide_next.replace("{g}", next==="preset" ? t.preset : LABEL[next])
+    : state==="done" ? t.guide_done : t.guide_free;
+  document.querySelectorAll("#gates button, #preset").forEach(b=>{
+    const id = b.id==="preset" ? "preset" : b.dataset.g;
+    b.classList.toggle("next", state==="step" && id===next);
+    b.classList.toggle("dim", state==="step" && id!==next);
+  });
+}
+
+// 2D picture of the idea, drawn from the measured counts (never from the gate list).
+function renderViz(){
+  const t = T[lang], n = GATE_SETS[lesson].qubits, c = last.counts, shots = last.shots;
+  const btn = `<button id="measure">${esc(t.measure_once)}</button>`;
+  if(lesson===2){
+    const keys = ["00","01","10","11"];
+    $("viz").innerHTML = keys.map(k=>{
+      const p = (c[k]||0)/shots, mine = picked===k;
+      return `<div class="vitem"><div class="box${mine?" picked":""}" style="--p:${p}">${mine && k==="11" ? "★" : k}</div></div>`;
+    }).join("") + `<p class="vcap muted">${esc(t.viz_boxes)}</p>` + btn;
+    return;
+  }
+  let undecided = false;
+  const coins = [...Array(n).keys()].map(q=>{
+    const p1 = Object.keys(c).filter(k=>k[q]==="1").reduce((s,k)=>s+c[k],0)/shots;
+    const fixed = p1===0 || p1===1;
+    if(!fixed) undecided = true;
+    const face = picked ? picked[q] : (fixed ? String(p1) : "?");
+    const cls = picked ? "coin land" : (fixed ? "coin" : "coin spin");
+    const name = lesson===1 ? t.viz_names[q] : "q0";
+    return `<div class="vitem"><div class="${cls}">${face}</div><div class="vname">${esc(name)}</div></div>`;
+  }).join("");
+  const cap = picked ? t.viz_landed.replace("{k}", picked) : (undecided ? t.viz_undecided : t.viz_certain);
+  $("viz").innerHTML = coins + `<p class="vcap muted">${esc(cap)}</p>` + btn;
+}
+
+function measureOnce(){
+  if(!last) return;
+  let r = Math.random() * last.shots;
+  for(const [k,v] of Object.entries(last.counts)){ r -= v; if(r < 0){ picked = k; break; } }
+  renderViz();
+}
+
+async function run(){
+  try{
+    const r = await fetch("/api/run",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({qubits:GATE_SETS[lesson].qubits,gates:seq})});
+    const d = await r.json();
+    if(!r.ok){ $("bars").textContent = d.error; return; }
+    last = d; picked = null; renderViz();
+    const n = GATE_SETS[lesson].qubits, keys = n===1 ? ["0","1"] : ["00","01","10","11"];
+    $("bars").innerHTML = keys.map(k=>{
+      const p = (d.counts[k]||0)/d.shots*100;
+      return `<div class="bar-row"><span class="bar-label">${k}</span><div class="bar-track" role="progressbar" aria-valuenow="${p.toFixed(1)}" aria-valuemin="0" aria-valuemax="100" aria-label="${k}: ${p.toFixed(1)}%"><div class="bar-fill" style="width:${p}%"></div></div><span class="bar-pct">${p.toFixed(1)}%</span></div>`;
+    }).join("");
+    $("diagram").textContent = d.diagram;
+    const t = T[lang], seen = keys.filter(k=>d.counts[k]);
+    $("insight").textContent = seen.length===1 ? t.ins_one.replace("{k}", seen[0])
+      : (n===2 && seen.length===2 && seen.every(k=>k[0]===k[1])) ? t.ins_pair.replace("{a}", seen[0]).replace("{b}", seen[1])
+      : t.ins_random;
+      
+    // Screen reader accessible announcement
+    const srSummary = keys.map(k=>`${k}: ${(d.counts[k]||0)/d.shots*100}%`).join(", ");
+    $("sr-announcer").textContent = t.sr_announcement.replace("{res}", srSummary);
+  }catch(e){ $("bars").textContent = T[lang].err; }
+}
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.id==="toggle-lite"){
+    isLite = !isLite;
+    localStorage.setItem("qs_lite", isLite ? "1" : "0");
+    applyA11ySettings();
+  }
+  else if(b.id==="toggle-contrast"){
+    isHighContrast = !isHighContrast;
+    localStorage.setItem("qs_contrast", isHighContrast ? "1" : "0");
+    applyA11ySettings();
+  }
+  else if(b.dataset.lang){ loadLang(b.dataset.lang).then(render).catch(()=>{ $("bars").textContent = T[lang].err; }); }
+  else if(b.dataset.i!==undefined){ lesson=+b.dataset.i; seq=[]; render(); }
+  else if(b.dataset.g){ if(seq.length<30){ seq.push(b.dataset.g); renderSeq(); run(); } }
+  else if(b.id==="undo"){ seq.pop(); renderSeq(); run(); }
+  else if(b.id==="clear"){ seq=[]; renderSeq(); run(); }
+  else if(b.id==="preset"){ seq=[...GROVER]; renderSeq(); run(); }
+  else if(b.id==="measure"){ measureOnce(); }
+  else if(b.id==="check"){
+    const sel = document.querySelector('input[name="q"]:checked'); if(!sel) return;
+    const L = T[lang].L[lesson], ok = +sel.value===L.a;
+    $("feedback").innerHTML = `<span class="${ok?"ok":"no"}">${ok?T[lang].correct:T[lang].wrong}</span>${esc(ok?L.why:L.hint)}`;
+  }
+});
+
+(async function init(){
+  try{
+    LANGS = (await (await fetch("/api/langs")).json()).langs;
+    await loadLang(LANGS[0].code);
+    render();
+  }catch(e){ document.body.insertAdjacentText("afterbegin", "Cannot reach the server. / सर्व्हरशी संपर्क होत नाही."); }
+})();
+</script>
+</body>
+</html>
