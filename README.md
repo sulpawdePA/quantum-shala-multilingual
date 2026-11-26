@@ -17,12 +17,32 @@ measurement histogram updates live. No GPU, no cloud account, no hardware needed
 | Open-source repo | Done: MIT licence | [`LICENSE`](LICENSE) |
 | **Stretch Goal: Accessibility & Low-Bandwidth Mode** | **Done: Screen-reader ARIA live region, Low-Bandwidth Lite mode, High Contrast** | `index.html`, `lang/*.json` |
 | Evidence from a quick learner test (3 people) | **Open: test sheet ready, results not yet collected** | Kept outside the repo |
-| 3-minute pitch | Script ready; learner-test numbers still to be filled in | Kept outside the repo |
+| 3-minute pitch video | **Open: video link to be added** (see [Pitch video](#pitch-video-and-team)) | Kept outside the repo |
+| Noise-model results, circuit depth, error mitigation | Done: simulated noise, depth/gate counts, readout mitigation | `noise_analysis.py`, section 4.3 |
+
+## Pitch video and team
+
+- **Pitch video (3 min):** _link to be added_
+- **Team name:** _to be added_
+- **Members:** _to be added_
+- **Track:** Education (Case Study 3)
 
 ## 1. The problem
 
 Quantum education is mostly in English, heavy on mathematics and often tied to
 expensive hardware. Learners who study in regional languages are left out of the field.
+
+**Who benefits.** Students and self-learners who are more comfortable in Marathi (or Hindi)
+than in English, for example school and college students in Maharashtra, and teachers who
+want a ready explanation in the classroom language. The tool needs only a laptop and a
+browser: there is no cloud account and no GPU, and a Low-Bandwidth mode and a High-Contrast mode
+support slow connections, low-end hardware and low-vision learners. The benefit we claim is
+a gentler first contact with three core ideas in a familiar language. We have not yet measured learning
+gains (see the learner test in section 4.4).
+
+**Path to deployment.** The server is a single small Flask app that can run on a school
+laptop or a low-cost host. A new language is one JSON file in `lang/`, so teachers and
+translators can contribute without touching the code.
 
 ## 2. Our approach
 
@@ -78,11 +98,12 @@ pip install -r requirements.txt
 python app.py                   # open http://127.0.0.1:5000
 ```
 
-Run the tests and the classical-vs-quantum comparison:
+Run the tests, the classical-vs-quantum comparison and the noise analysis:
 
 ```bash
 python -m unittest test_app.py -v
 python baseline.py
+python noise_analysis.py
 ```
 
 ## 4. Results
@@ -123,7 +144,31 @@ order (20,000 trials). Grover runs on Qiskit Aer (2,000 shots, ideal simulator, 
 The classical cost grows like N/2, while Grover needs about (pi/4)*sqrt(N) rounds.
 For the small sizes used in teaching the difference is small; it grows with N.
 
-### 4.3 Learner test
+### 4.3 Noise model, circuit depth and error mitigation
+
+[`noise_analysis.py`](noise_analysis.py) runs the Bell pair (lesson 2) and Grover (lesson 3) on
+Qiskit Aer with a **simulated noise model**: 0.1% depolarizing error on 1-qubit gates, 1.0% on `cx`
+and 2% readout error (4,000 shots). **These error rates are illustrative. They are not calibrated to a
+real IBM device, and we did not run on IBM hardware.** Circuits are transpiled to the basis
+`cx, rz, sx, x`.
+
+| Circuit | Depth | Gates | CX | Ideal | Noisy | Readout-mitigated |
+|---|---|---|---|---|---|---|
+| Bell pair (`00` or `11`) | 5 | 4 | 1 | 100.0% | 95.7% | 99.4% |
+| Grover n=2 (1 round) | 12 | 15 | 2 | 100.0% | 94.6% | 98.3% |
+| Grover n=3 (2 rounds) | 56 | 93 | 24 | 94.2% | 72.9% | 77.4% |
+| Grover n=4 (3 rounds) | 172 | 234 | 84 | 95.6% | 45.7% | 49.2% |
+
+- **Error mitigation:** readout-error mitigation, which inverts the measured confusion matrix
+  (one calibration circuit per basis state). It recovers most of the loss for the shallow lesson
+  circuits but little for deeper ones, because there the errors come mainly from the many `cx` gates
+  (gate noise), not from readout.
+- **What it shows:** circuit depth grows quickly with the number of qubits (the multi-controlled gates in
+  the oracle and diffuser are expensive). On noisy hardware, Grover beyond 2 to 3 qubits would need
+  stronger mitigation or error correction. The 2-qubit lesson circuits are shallow enough to be robust.
+- Counts of depth and gates are for the transpiled circuit at optimisation level 1.
+
+### 4.4 Learner test
 
 The test sheet is kept outside this repo. Results: **TO BE FILLED after testing with 3 learners.**
 
@@ -131,8 +176,9 @@ The test sheet is kept outside this repo. Results: **TO BE FILLED after testing 
 
 - This is a **teaching tool**, not a demonstration of quantum advantage. With 4 to 16
   items, a classical computer is just as fast in real time.
-- Everything runs on an **ideal simulator**. We did not run on IBM hardware, and
-  we do not claim anything about noise behaviour.
+- The web app runs on an **ideal simulator**. The noise results in section 4.3 use a simple,
+  illustrative noise model, not a calibrated device model. We did not run on IBM hardware, and
+  we make no claim about how real devices behave.
 - Only 1 to 2 qubits are exposed in the interface; Grover is shown as a preset sequence.
 - The animations are an illustration of the idea, not a physical model (no Bloch sphere or 3D view, by design, to keep it simple for beginners). They have been checked by script against the API but not yet by learners.
 - The Marathi text has not yet been reviewed by an educator or a native-speaker teacher.
