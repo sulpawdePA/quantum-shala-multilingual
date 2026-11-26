@@ -1,6 +1,7 @@
 {
   "label": "English",
   "title": "Quantum Shala",
+  "topics": "Topics",
   "footer": "Runs on real Qiskit circuits • QFF 2026 Education Track",
   "undo": "← Undo",
   "clear": "Clear",
